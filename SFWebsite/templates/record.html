@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Customer Record:</h1>
+
+{{ customer_record }}
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ customer_record.id }}</td>
+            <td>{{ customer_record.first_name }}</td>
+            <td>{{ customer_record.last_name }}</td>
+            <td>{{ customer_record.email }}</td>
+            <td>{{ customer_record.phone }}</td>
+            <td><a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</></a></td>
+            <td><a href="{% url 'update_record' customer_record.id %}" class="btn btn-danger">Update Record</></a></td>
+        </tr>
+    </tbody>
+  </table>
+
+{% endblock %}

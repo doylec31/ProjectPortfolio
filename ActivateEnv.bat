@@ -1,0 +1,1 @@
+C:\Data\venvs\StoreFront_venv\Scripts\activate.bat
