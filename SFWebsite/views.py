@@ -90,3 +90,9 @@ def update_record(request, pk):
     else:
         messages.success(request, "You must be logged in to update a record")
         return redirect('home')
+
+def projects(request):
+    return render(request, 'projects.html')
+
+def project_detail(request, project_name):
+    return render(request, f'portfolio/{project_name}.html')
