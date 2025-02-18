@@ -1,2 +1,4 @@
 # .gitignore
 StoreFront/settings.py
+StoreFront/__pycache__/
+SFWebsite/__pycache__/
