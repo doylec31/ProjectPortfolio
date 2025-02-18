@@ -1,0 +1,13 @@
+{% extends 'portfolio/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>This is project 4</h1>
+<div class="step">
+    <h2>Step 1: Project Setup</h2>
+    <p>Description of setup process...</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1')">View Screenshot</button>
+    <img src="{% static 'portfolio/screenshots/project1/setup.png' %}" id="screenshot1" class="screenshot" alt="Project Setup">
+</div>
+{% endblock %}

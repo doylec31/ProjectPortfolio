@@ -3,7 +3,6 @@
 <head>
     <title>Technical Projects</title>
     <style>
-        /* All CSS goes here */
         body {
             margin: 0;
             padding: 0;
@@ -12,17 +11,62 @@
             min-height: 100vh;
         }
         nav {
-            width: 250px;
+            width: 300px;
             background: white;
             padding: 15px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
         }
-        nav a {
-            display: block;
+        .search-container {
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .tags-container {
+            margin-bottom: 20px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            background: #e9ecef;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .tag.active {
+            background: #007bff;
+            color: white;
+        }
+        .project-link {
+            display: flex;
+            flex-direction: column;
             padding: 10px;
             color: #333;
             text-decoration: none;
             margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .project-link:hover {
+            background: #f8f9fa;
+        }
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .project-tag {
+            font-size: 11px;
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 8px;
         }
         .content {
             flex: 1;
@@ -49,31 +93,143 @@
             background-color: #dc3545;
             color: white;
         }
-        .medium-size {
-            width: 50%; /* Or specify a fixed width, e.g., 300px */
-            height: auto; /* Maintain aspect ratio */
-            max-width: 1800px; /* Optional: limit the maximum width */
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
     <nav>
-        <a href="{% url 'project_detail' 'project1' %}">Project 1: Django REST API</a>
-        <a href="{% url 'project_detail' 'project2' %}">Project 2: React Dashboard</a>
-        <a href="{% url 'project_detail' 'project3' %}">Project 3: ML Model</a>
-        <a href="{% url 'project_detail' 'project4' %}">Project 4: New Project</a>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search projects...">
+            <div class="tags-container">
+                <div class="tag" data-tag="python">Python</div>
+                <div class="tag" data-tag="django">Django</div>
+                <div class="tag" data-tag="react">React</div>
+                <div class="tag" data-tag="api">API</div>
+                <div class="tag" data-tag="database">Database</div>
+                <div class="tag" data-tag="ml">Machine Learning</div>
+                <div class="tag" data-tag="openshift">OpenShift</div>
+                <div class="tag" data-tag="ci">CI</div>
+                <div class="tag" data-tag="cd">CD</div>
+                <div class="tag" data-tag="docker">Docker</div>
+                <div class="tag" data-tag="kubernetes">Kubernetes</div>
+                <div class="tag" data-tag="ai">AI</div>
+                <div class="tag" data-tag="linux">Linux</div>
+                <div class="tag" data-tag="bash">Bash</div>
+                <div class="tag" data-tag="azure">Azure</div>
+                <div class="tag" data-tag="iac">IaC</div>
+                <div class="tag" data-tag="data">Data</div>
+                <div class="tag" data-tag="dataanalysis">Data Analysis</div>
+            </div>
+        </div>
+        <div id="project-list">
+            <a href="{% url 'project_detail' 'project1' %}" class="project-link" data-tags="python,django,api,openshift">
+                <span>DevOps Capstone Project</span>
+                <div class="project-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">Django</span>
+                    <span class="project-tag">API</span>
+                    <span class="project-tag">OpenShift</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project2' %}" class="project-link" data-tags="ci,cd">
+                <span>Continuous Integration and Delivery</span>
+                <div class="project-tags">
+                    <span class="project-tag">CI</span>
+                    <span class="project-tag">CD</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project3' %}" class="project-link" data-tags="python,ml">
+                <span>App Dev Using Microservices and Serverless</span>
+                <div class="project-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">ML</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project4' %}" class="project-link" data-tags="docker,kubernetes,openshift">
+                <span>Containers, Kubernetes and OpenShift</span>
+                <div class="project-tags">
+                    <span class="project-tag">Docker</span>
+                    <span class="project-tag">Kubernetes</span>
+                    <span class="project-tag">OpenShift</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project5' %}" class="project-link" data-tags="python,ml,ai">
+                <span>Python for AI & Development Project</span>
+                <div class="project-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">ML</span>
+                    <span class="project-tag">AI</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project6' %}" class="project-link" data-tags="linux,bash">
+                <span>Linux Commands & Shell Scripting</span>
+                <div class="project-tags">
+                    <span class="project-tag">Linux</span>
+                    <span class="project-tag">Bash</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project7' %}" class="project-link" data-tags="azure,cd,iac">
+                <span>Azure Build network and resources using ARM templates</span>
+                <div class="project-tags">
+                    <span class="project-tag">Azure</span>
+                    <span class="project-tag">CD</span>
+                    <span class="project-tag">IaC</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project8' %}" class="project-link" data-tags="azure,cd,iac">
+                <span>Azure Devops CD pipeline deploy app to Azure</span>
+                <div class="project-tags">
+                    <span class="project-tag">Azure</span>
+                    <span class="project-tag">CD</span>
+                    <span class="project-tag">IaC</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project9' %}" class="project-link" data-tags="data,ml">
+                <span>Data Engineering Capstone Project</span>
+                <div class="project-tags">
+                    <span class="project-tag">Data</span>
+                    <span class="project-tag">ML</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project10' %}" class="project-link" data-tags="dataanalysis,ml">
+                <span>Data Analytics and Visualization Capstone Project</span>
+                <div class="project-tags">
+                    <span class="project-tag">Data Analysis</span>
+                    <span class="project-tag">ML</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project11' %}" class="project-link" data-tags="python,ml">
+                <span>Python for Data Science Project</span>
+                <div class="project-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">ML</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project12' %}" class="project-link" data-tags="dataanalysis,ml">
+                <span>Visualizing Data with Python</span>
+                <div class="project-tags">
+                    <span class="project-tag">Data Analysis</span>
+                    <span class="project-tag">ML</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project13' %}" class="project-link" data-tags="dataanalysis,ml">
+                <span>Analyzing Data with Python</span>
+                <div class="project-tags">
+                    <span class="project-tag">Data Analysis</span>
+                    <span class="project-tag">ML</span>
+                </div>
+            </a>
+        </div>
     </nav>
+    
     <div class="content">
         {% block content %}{% endblock %}
     </div>
-    {% comment %} <script>
-        function toggleScreenshot(id) {
-            const screenshot = document.getElementById(id);
-            screenshot.classList.toggle('visible');
-        }
-    </script> {% endcomment %}
 
     <script>
+        // Screenshot handling
         function toggleScreenshot(id, button) {
             const screenshot = document.getElementById(id);
             const hideButton = document.getElementById('hide-' + id);
@@ -81,7 +237,7 @@
             button.style.display = 'none';
             hideButton.style.display = 'inline-block';
         }
-    
+
         function hideScreenshot(id) {
             const screenshot = document.getElementById(id);
             const viewButton = document.querySelector(`[onclick="toggleScreenshot('${id}', this)"]`);
@@ -90,6 +246,44 @@
             viewButton.style.display = 'inline-block';
             hideButton.style.display = 'none';
         }
+
+        // Search and filtering
+        const searchInput = document.getElementById('searchInput');
+        const tags = document.querySelectorAll('.tag');
+        const projectLinks = document.querySelectorAll('.project-link');
+        let activeTags = new Set();
+
+        function filterProjects() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            projectLinks.forEach(project => {
+                const projectText = project.textContent.toLowerCase();
+                const projectTags = project.dataset.tags.split(',');
+                
+                const matchesSearch = projectText.includes(searchTerm);
+                const matchesTags = activeTags.size === 0 || 
+                    projectTags.some(tag => activeTags.has(tag));
+                
+                project.classList.toggle('hidden', !matchesSearch || !matchesTags);
+            });
+        }
+
+        searchInput.addEventListener('input', filterProjects);
+
+        tags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                const tagValue = tag.dataset.tag;
+                tag.classList.toggle('active');
+                
+                if (activeTags.has(tagValue)) {
+                    activeTags.delete(tagValue);
+                } else {
+                    activeTags.add(tagValue);
+                }
+                
+                filterProjects();
+            });
+        });
     </script>
 </body>
 </html>
