@@ -1,0 +1,48 @@
+{% extends 'portfolio/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Project 14: Get Azure Non-Compliant Policies</h1>
+<div class="step">
+    <h2>Get Azure Non-Compliant Policies</h2>
+    <p>This script connects to Azure and get all subscriptions.</p>
+    <p>It then gets all policy assignments for each subscription.</p>
+    <p>For each policy assignment, it checks for the compliance state of each resource that has the policy assigned.</p>
+    <p>It gets information for non-compliant resources and adds them to an Excel file.</p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('AzurecodeSnippet', this)">View Code Snippet</button>
+        <pre id="AzurecodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        $PolicyAssignmentResults = @()
+        Connect-AzAccount -WarningAction Ignore
+        $subscriptions = Get-AzSubscription -InformationAction SilentlyContinue -WarningAction SilentlyContinue
+        foreach ($Subscription in $subscriptions) {
+            Set-AzContext -Subscription $Subscription.id -WarningAction SilentlyContinue
+            $PolicyAssignments = Get-AzPolicyAssignment
+        
+            foreach ($PolicyAssignment in $PolicyAssignments) {
+                $NonCompliantResources = Get-AzPolicyState -PolicyAssignmentName $PolicyAssignment.Name -Filter 'IsCompliant eq false'
+                foreach ($NonCompliantResource in $NonCompliantResources) {
+                    $NonCompliantResourceResult = {} | Select SubscriptionName, PolicyAssignmentDisplayName, PolicyAssignmentName, NonCompliantResourceId, AssignmentScope, SubscriptionId, PolicyAssignmentId, PolicyDefinition
+                    $NonCompliantResourceResult.SubscriptionName = $Subscription.Name
+                    $NonCompliantResourceResult.PolicyAssignmentDisplayName = ($PolicyAssignment | Select -ExpandProperty Properties).DisplayName
+                    $NonCompliantResourceResult.PolicyAssignmentName = $PolicyAssignment.Name
+                    $NonCompliantResourceResult.NonCompliantResourceId = $NonCompliantResource.ResourceId
+                    $NonCompliantResourceResult.AssignmentScope = ($PolicyAssignment | Select -ExpandProperty Properties).Scope
+                    $NonCompliantResourceResult.SubscriptionId = $Subscription.Id
+                    $NonCompliantResourceResult.PolicyAssignmentId = $NonCompliantResource.PolicyAssignmentId
+                    $NonCompliantResourceResult.PolicyDefinition = $NonCompliantResource.PolicyDefinitionId
+                    $PolicyAssignmentResults += $NonCompliantResourceResult
+                }
+            }
+        }
+        
+        if (Test-Path $XLFile) { Remove-Item $XLFile}
+        $PolicyAssignmentResults | Export-Excel -Path $XLFile -WorksheetName PolAss -Now     
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('AzurecodeSnippet')" style="display: none;" id="hide-AzurecodeSnippet">Hide Code Snippet</button>
+    </div>
+</div>
+{% endblock %}

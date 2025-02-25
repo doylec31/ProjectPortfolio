@@ -53,6 +53,11 @@
             margin-bottom: 5px;
             border-radius: 4px;
         }
+        .project-title {
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
         .project-link:hover {
             background: #f8f9fa;
         }
@@ -96,10 +101,21 @@
         .hidden {
             display: none;
         }
+        .panel-title {
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
     </style>
 </head>
 <body>
     <nav>
+        <a href="/" class="project-link home-link" data-tags="">
+            <span class="project-title">Back to Doylec31 Home</span>
+        </a>
+        <h1 class="panel-title">Project List</h1>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search projects...">
             <div class="tags-container">
@@ -121,57 +137,63 @@
                 <div class="tag" data-tag="iac">IaC</div>
                 <div class="tag" data-tag="data">Data</div>
                 <div class="tag" data-tag="dataanalysis">Data Analysis</div>
+                <div class="tag" data-tag="powershell">Powershell</div>
+                <div class="tag" data-tag="autotask">Autotask</div>
+                <div class="tag" data-tag="logicmonitor">LogicMonitor</div>
+                <div class="tag" data-tag="msgraph">MSGraph</div>
+                <div class="tag" data-tag="kaseya">Kaseya</div>
+                <div class="tag" data-tag="azure">Azure</div>
             </div>
         </div>
         <div id="project-list">
-            <a href="{% url 'project_detail' 'project1' %}" class="project-link" data-tags="python,django,api,openshift">
-                <span>DevOps Capstone Project</span>
+            <a href="{% url 'project_detail' 'project1' %}" class="project-link" data-tags="powershell,autotask,api,logicmonitor">
+                <span class="project-title">Project1: LogicMonitor - Autotask Integration</span>
                 <div class="project-tags">
-                    <span class="project-tag">Python</span>
-                    <span class="project-tag">Django</span>
+                    <span class="project-tag">Powershell</span>
+                    <span class="project-tag">Autotask</span>
                     <span class="project-tag">API</span>
-                    <span class="project-tag">OpenShift</span>
+                    <span class="project-tag">LogicMonitor</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project2' %}" class="project-link" data-tags="ci,cd">
-                <span>Continuous Integration and Delivery</span>
+                <span class="project-title">Project 2: Continuous Integration and Delivery</span>
                 <div class="project-tags">
                     <span class="project-tag">CI</span>
                     <span class="project-tag">CD</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project3' %}" class="project-link" data-tags="python,ml">
-                <span>App Dev Using Microservices and Serverless</span>
+                <span class="project-title">Project3: App Dev Using Microservices and Serverless</span>
                 <div class="project-tags">
                     <span class="project-tag">Python</span>
                     <span class="project-tag">ML</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project4' %}" class="project-link" data-tags="docker,kubernetes,openshift">
-                <span>Containers, Kubernetes and OpenShift</span>
+                <span class="project-title">Project4: Containers, Kubernetes and OpenShift</span>
                 <div class="project-tags">
                     <span class="project-tag">Docker</span>
                     <span class="project-tag">Kubernetes</span>
                     <span class="project-tag">OpenShift</span>
                 </div>
             </a>
-            <a href="{% url 'project_detail' 'project5' %}" class="project-link" data-tags="python,ml,ai">
-                <span>Python for AI & Development Project</span>
+            <a href="{% url 'project_detail' 'project5' %}" class="project-link" data-tags="powershell,msgraph,api">
+                <span class="project-title">Project5: Read Emails from MS 365 Exchange Online Mailbox</span>
                 <div class="project-tags">
-                    <span class="project-tag">Python</span>
-                    <span class="project-tag">ML</span>
-                    <span class="project-tag">AI</span>
+                    <span class="project-tag">Powershell</span>
+                    <span class="project-tag">MSGraph</span>
+                    <span class="project-tag">API</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project6' %}" class="project-link" data-tags="linux,bash">
-                <span>Linux Commands & Shell Scripting</span>
+                <span class="project-title">Project6: Linux Commands & Shell Scripting</span>
                 <div class="project-tags">
                     <span class="project-tag">Linux</span>
                     <span class="project-tag">Bash</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project7' %}" class="project-link" data-tags="azure,cd,iac">
-                <span>Azure Build network and resources using ARM templates</span>
+                <span class="project-title">Project7: Azure Build network and resources using ARM templates</span>
                 <div class="project-tags">
                     <span class="project-tag">Azure</span>
                     <span class="project-tag">CD</span>
@@ -179,46 +201,71 @@
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project8' %}" class="project-link" data-tags="azure,cd,iac">
-                <span>Azure Devops CD pipeline deploy app to Azure</span>
+                <span class="project-title">Project8: Azure Devops CD pipeline deploy app to Azure</span>
                 <div class="project-tags">
                     <span class="project-tag">Azure</span>
                     <span class="project-tag">CD</span>
                     <span class="project-tag">IaC</span>
                 </div>
             </a>
-            <a href="{% url 'project_detail' 'project9' %}" class="project-link" data-tags="data,ml">
-                <span>Data Engineering Capstone Project</span>
+            <a href="{% url 'project_detail' 'project9' %}" class="project-link" data-tags="kaseya,api,powershell">
+                <span class="project-title">Project9: Kaseya Ticket Query</span>
                 <div class="project-tags">
-                    <span class="project-tag">Data</span>
-                    <span class="project-tag">ML</span>
+                    <span class="project-tag">Kaseya</span>
+                    <span class="project-tag">API</span>
+                    <span class="project-tag">Powershell</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project10' %}" class="project-link" data-tags="dataanalysis,ml">
-                <span>Data Analytics and Visualization Capstone Project</span>
+                <span class="project-title">Project10: Data Analytics and Visualization Capstone Project</span>
                 <div class="project-tags">
                     <span class="project-tag">Data Analysis</span>
                     <span class="project-tag">ML</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project11' %}" class="project-link" data-tags="python,ml">
-                <span>Python for Data Science Project</span>
+                <span class="project-title">Project11: Python for Data Science Project</span>
                 <div class="project-tags">
                     <span class="project-tag">Python</span>
                     <span class="project-tag">ML</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project12' %}" class="project-link" data-tags="dataanalysis,ml">
-                <span>Visualizing Data with Python</span>
+                <span class="project-title">Project12: Visualizing Data with Python</span>
                 <div class="project-tags">
                     <span class="project-tag">Data Analysis</span>
                     <span class="project-tag">ML</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project13' %}" class="project-link" data-tags="dataanalysis,ml">
-                <span>Analyzing Data with Python</span>
+                <span class="project-title">Project13: Analyzing Data with Python</span>
                 <div class="project-tags">
                     <span class="project-tag">Data Analysis</span>
                     <span class="project-tag">ML</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project14' %}" class="project-link" data-tags="powershell,msgraph,api,azure">
+                <span class="project-title">Project14: Get Azure Non-Compliant Policies</span>
+                <div class="project-tags">
+                    <span class="project-tag">Powershell</span>
+                    <span class="project-tag">MSGraph</span>
+                    <span class="project-tag">API</span>
+                    <span class="project-tag">Azure</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project15' %}" class="project-link" data-tags="data,ml">
+                <span class="project-title">Project15: Data Engineering Capstone Project</span>
+                <div class="project-tags">
+                    <span class="project-tag">Data</span>
+                    <span class="project-tag">ML</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project16' %}" class="project-link" data-tags="powershell,api,kaseya">
+                <span class="project-title">Project16: Delete Kaseya Agents</span>
+                <div class="project-tags">
+                    <span class="project-tag">Powershell</span>
+                    <span class="project-tag">API</span>
+                    <span class="project-tag">Kaseya</span>
                 </div>
             </a>
         </div>
@@ -255,10 +302,15 @@
 
         function filterProjects() {
             const searchTerm = searchInput.value.toLowerCase();
-            
+    
             projectLinks.forEach(project => {
+                // Skip filtering for home link
+                if (project.classList.contains('home-link')) {
+                    return;
+                }
+                
                 const projectText = project.textContent.toLowerCase();
-                const projectTags = project.dataset.tags.split(',');
+                const projectTags = project.dataset.tags ? project.dataset.tags.split(',') : [];
                 
                 const matchesSearch = projectText.includes(searchTerm);
                 const matchesTags = activeTags.size === 0 || 
@@ -284,6 +336,25 @@
                 filterProjects();
             });
         });
+    </script>
+
+    <script>
+        function toggleCode(id, button) {
+            const codeSnippet = document.getElementById(id);
+            const hideButton = document.getElementById('hide-' + id);
+            codeSnippet.style.display = 'block';
+            button.style.display = 'none';
+            hideButton.style.display = 'inline-block';
+        }
+        
+        function hideCode(id) {
+            const codeSnippet = document.getElementById(id);
+            const viewButton = document.querySelector(`[onclick="toggleCode('${id}', this)"]`);
+            const hideButton = document.getElementById('hide-' + id);
+            codeSnippet.style.display = 'none';
+            viewButton.style.display = 'inline-block';
+            hideButton.style.display = 'none';
+        }
     </script>
 </body>
 </html>

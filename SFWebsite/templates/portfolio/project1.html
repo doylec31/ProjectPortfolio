@@ -4,13 +4,193 @@
 
 {% block content %}
 
-<h1>Project 1: Django REST API</h1>
+<h1>Project1: LogicMonitor - Autotask Integration</h1>
 <div class="step">
-    <h2>Step 1: Project Setup</h2>
-    <p>Description of setup process...</p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1', this)">View Screenshot</button>
-    <img src="{% static 'portfolio/project1/setup.png' %}" id="screenshot1" class="screenshot medium-size" alt="Project Setup">
-    <button class="hide-btn" onclick="hideScreenshot('screenshot1')" style="display: none;" id="hide-screenshot1">Hide Screenshot</button>
+    <h2>Introduction</h2>
+    <p>This project is a Powershell script that integrates LogicMonitor with Autotask so that alerts in LogicMonitor become tickets in Autotask.</p>
+    Autotask is a PSA (Professional Services Automation) tool that is used to manage tickets, projects, and billing. 
+    LogicMonitor is a monitoring tool that alerts on issues with servers, network devices, cloud services and applications.
+    <p>The script runs on a schedule and checks for new alerts. It then creates new tickets or appends to existing tickets as appropriate.</p>
+    Both products have REST API endpoints that allow integration.
+    The solution had a number of requirements that were defined at the planning stage.
+    The following is modified and not the complete solution which runs to about 700 lines.
+    It shows how some of the requirements were implemented.
+    <br>
+    <br>
+    <h2>The Autotask module</h2>
+    <p>I wrote Powershell functions in the form of Powershell cmdlets to carry out tasks such as creating a new ticket, updating a ticket, and adding a note to a ticket.
+    The functions are in a module called Autotask.psm1. The module is imported into the main script. Here's a couple of examples.</p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('ATModulecodeSnippet', this)">View Code Snippet</button>
+        <pre id="ATModulecodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        function Get-AutotaskTicketDetailsByID ($headers, $TicketID) {
+            $baseurl = #Autotask url goes here
+            $Endpoint = "Tickets/query"
+            $filter = "?search={'filter':[{'op':'eq','field':'id','value':'$TicketID'}]}"
+            $url = $baseurl + $Endpoint + $filter
+            $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers
+            $Ticket = $response.items
+            $Ticket = $Ticket | Select id, ticketNumber, title, issueType, subIssueType, assignedResourceID, configurationItemID,  creatorResourceID, companyID, status, createDate, description
+            Return $Ticket
+        }
+
+        function Update-AutotaskTicketStatus ($headers, $ID, $Status) {
+
+            switch ($Status) {
+                'Scheduled' { $TicketStatus = 14 }
+                'Updated' { $TicketStatus = 15 }
+                Default { $TicketStatus = 15}
+            }
+            
+            $body = {} | Select ID, status
+            $body.ID = $ID
+            $body.status = $TicketStatus
+            $body = $body | ConvertTo-Json -Depth 10
+            
+            $response = $Null
+            $response = Invoke-RestMethod 'https://<url>/v1.0/Tickets' -Method 'PATCH' -Headers $headers -Body $body
+            #$response | ConvertTo-Json
+            
+            $TicketID = $response.itemId
+            Return $TicketID
+        }
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('ATModulecodeSnippet')" style="display: none;" id="hide-ATModulecodeSnippet">Hide Code Snippet</button>
+    </div>
+    <br>
+    <br>
+    <h2>The LogicMonitor module</h2>
+    <p>I also wrote LogicMonitor functions in the form of Powershell cmdlets to carry out tasks such as reading new alerts and checking old alerts to see if they were still active.
+    The functions are in a module called LogicMonitor.psm1 and imported into the main script.
+    Here's a function that creates the LogicMonitor headers for authentication and a function that gets the company id from LogicMonitor which allows the ticket to be created under the correct customer in Autotask.</p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('LMModulecodeSnippet', this)">View Code Snippet</button>
+        <pre id="LMModulecodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        function Get-LMHeaders ($HTTPVerb, $ResourcePath, $AccessID) {
+            $epoch = [Math]::Round((New-TimeSpan -start (Get-Date -Date "1/1/1970") -end (Get-Date).ToUniversalTime()).TotalMilliseconds)
+            $requestVars = $httpVerb + $epoch + $resourcePath
+            $hmac = New-Object System.Security.Cryptography.HMACSHA256
+            $hmac.Key = [Text.Encoding]::UTF8.GetBytes($accessKey)
+            $signatureBytes = $hmac.ComputeHash([Text.Encoding]::UTF8.GetBytes($requestVars))
+            $signatureHex = [System.BitConverter]::ToString($signatureBytes) -replace '-'
+            $signature = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($signatureHex.ToLower()))
+            $auth = 'LMv1 ' + $accessId + ':' + $signature + ':' + $epoch
+            $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+            $headers.Add("Authorization",$auth)
+            $headers.Add("Content-Type",'application/json')
+            $headers.Add("x-version", "3")
+            Return $headers
+        }
+
+        function Get-CompanyID ($MonitorObjectId, $MonitorObjectType) {
+            if ($MonitorObjectType -eq 'website') {
+                $httpVerb = 'GET'
+                $resourcePath = "/website/websites/$MonitorObjectId/properties"
+                $LMHeaders = Get-LMHeaders -HTTPVerb $httpVerb -ResourcePath $resourcePath -AccessID $accessId
+                $url = 'https://' + $company + '.logicmonitor.com/santaba/rest' + $resourcePath
+                $response = Invoke-RestMethod -Uri $url -Method Get -Header $LMheaders
+                $CompanyID = ($response | Select -ExpandProperty items | Where {$_.name -eq 'autotask.accountid'}).value
+            } elseif ($MonitorObjectType -eq 'device') {
+                $httpVerb = 'GET'
+                $resourcePath = '/device/devices'
+                $QueryParams = "?filter=id:$MonitorObjectId"
+                $LMHeaders = Get-LMHeaders -HTTPVerb $httpVerb -ResourcePath $resourcePath -AccessID $accessId
+                $url = 'https://' + $company + '.logicmonitor.com/santaba/rest' + $resourcePath + $QueryParams
+                $response = Invoke-RestMethod -Uri $url -Method Get -Header $LMheaders
+                $CompanyID = ($response.items | Select -ExpandProperty inheritedProperties | Where {$_.name -eq 'autotask.accountid'}).value      
+            } else {
+                $httpVerb = 'GET'
+                $resourcePath = '/device/devices'
+                $QueryParams = "?filter=id:$MonitorObjectId"
+                $LMHeaders = Get-LMHeaders -HTTPVerb $httpVerb -ResourcePath $resourcePath -AccessID $accessId
+                $url = 'https://' + $company + '.logicmonitor.com/santaba/rest' + $resourcePath + $QueryParams
+                $response = Invoke-RestMethod -Uri $url -Method Get -Header $LMheaders
+                $CompanyID = ($response.items | Select -ExpandProperty inheritedProperties | Where {$_.name -eq 'autotask.accountid'}).value
+            }
+            Return $CompanyID
+        }
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('LMModulecodeSnippet')" style="display: none;" id="hide-LMModulecodeSnippet">Hide Code Snippet</button>
+    </div>
+    <br>
+    <br>
+    <h2>The Main Script</h2>
+    <p>The main script carries out many tasks including checking and truncating the log file, reading recently created tickets from the log file and checking if alerts are still open.
+        Here is one section that reads an alert and creates a ticket in Autotask.</p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('MainScriptcodeSnippet', this)">View Code Snippet</button>
+        <pre id="MainScriptcodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+
+        #Check if there is an existing ticket for this asset. If there is and the ticket is still open, append a note. If not, create a ticket.
+        if ($AlertToProcess.monitorObjectName -in $PreviouslyCreatedTicketsAndNotes.Asset) {
+            #only partly shown...
+        
+            } else {
+            #If no previous ticket, get the company id to create the ticket under using the autotaskid property on the device
+            $CompanyID = Get-CompanyID -MonitorObjectId $AlertToProcess.monitorObjectId -MonitorObjectType $AlertToProcess.monitorObjectType
+            $NewTicket = Create-AutotaskTicket -headers $ATheaders -CompanyID $CompanyID -Priority 3 -Title $Title -Description $Description
+            "$(Get-Date),NoPreviousTicket-CreateNewTicket,$($AlertToProcess.monitorObjectName),$($AlertToProcess.id),$($AlertToProcess.internalId)" >> $LogFile
+            "$(Get-Date),TicketCreated,$($AlertToProcess.id),$($AlertToProcess.internalId),$($AlertToProcess.monitorObjectName),$($NewTicket.TicketID),$($NewTicket.TicketNumber)" >> $LogFile
+            "$($AlertToProcess.id)" | Out-File $OpenAlertsFile -append -Encoding UTF8
+    
+            $ThisTicket = {} | Select Date, Id, InternalId, Asset, ATTicketID, ATTicketNum
+            $ThisTicket.Date = Get-Date
+            $ThisTicket.Id = $AlertToProcess.Id
+            $ThisTicket.InternalId = $AlertToProcess.internalId
+            $ThisTicket.Asset = $AlertToProcess.monitorObjectName
+            $ThisTicket.ATTicketID = $NewTicket.TicketID
+            $ThisTicket.ATTicketNum = $NewTicket.TicketNumber
+            $PreviouslyCreatedTicketsAndNotes += $ThisTicket
+            "$(Get-Date),PreviouslyCreatedTicketsAndListUpdated,$($PreviouslyCreatedTicketsAndNotes.count) tickets in list" >> $LogFile
+    
+            if ($Error.count -gt 0) {
+                $AllErrors += $Error.Count
+                "$(Get-Date),Phase9-ErrorEncountered,$($Error.Count) error(s) encountered" >> $LogFile
+                foreach ($Err in $Error) {
+                    $Error.Exception.ToString() >> $LogFile
+                    $Error.ErrorDetails.ToString() >> $LogFile
+                }
+            }
+            $error.Clear()
+        }
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('MainScriptcodeSnippet')" style="display: none;" id="hide-MainScriptcodeSnippet">Hide Code Snippet</button>
+    </div>
+    <br>
+    <br>
+    <h2>Encrypting Credentials</h2>
+    <p>The script needs credentials to authenticate to Autotask and LogicMonitor APIs. These can't be in plain text in the script.
+        I used a method recommended by Microsoft to encrypt the credentials and store them in a file.
+        I set up a service account to run the scheduled task which runs the script.
+        When putting the script into production, i logged on to the automation server as the service account and encrypted the credentials.
+        The encrypted credentials were stored in files.
+        At run time, the script reads the encrypted credentials from the files and decrypts them.
+        Here is the code that reads the encrypted credentials from the file and decrypts them.
+        The $ATHeaders object can then be passed as a parameter to any function that will interact with Autotask.</p>
+
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('CredentialscodeSnippet', this)">View Code Snippet</button>
+        <pre id="CredentialscodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        $ATheaders = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+        $apiintcode = [pscredential]::new('u', $(Get-Content "$CredsFolder\apiintcode.txt" | ConvertTo-SecureString)).GetNetworkCredential().Password
+        $ATheaders.Add("ApiIntegrationCode", $apiintcode)
+        $atusercode = [pscredential]::new('u', $(Get-Content "$CredsFolder\atusercode.txt" | ConvertTo-SecureString)).GetNetworkCredential().Password
+        $ATheaders.Add("UserName", $atusercode)
+        $atseccode = [pscredential]::new('u', $(Get-Content "$CredsFolder\atseccode.txt" | ConvertTo-SecureString)).GetNetworkCredential().Password
+        $ATheaders.Add("Secret", $atseccode)
+        $ATheaders.Add("Content-Type", "application/json")
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('CredentialscodeSnippet')" style="display: none;" id="hide-CredentialscodeSnippet">Hide Code Snippet</button>
+    </div>
+
 </div>
 {% endblock %}
 

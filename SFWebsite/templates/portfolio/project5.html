@@ -3,11 +3,48 @@
 {% load static %}
 
 {% block content %}
-<h1>This is project 4</h1>
 <div class="step">
-    <h2>Step 1: Project Setup</h2>
-    <p>Description of setup process...</p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1')">View Screenshot</button>
-    <img src="{% static 'portfolio/screenshots/project1/setup.png' %}" id="screenshot1" class="screenshot" alt="Project Setup">
+    <h2>Project 5: Read Emails from MS 365 Exchange Online Mailbox</h2>
+    <p>This project shows the process of automating reading emails from a MS 365 Exchange Online mailbox via the MS Graph API.</p>
+    <p>This was part of a bigger project to extract information from email alerts and create tickets from them in a ticketing system.</p>
+    <p>An app reg is set up in Azure AD (Entra ID) and a certificate is uploaded to it.</p>
+    <p>The cert is installed on the server where the scdeduled task is run.</p>
+    <p>The app reg has the required permissions to read emails from the mailbox.</p>
+    <p>The code snippet below shows how the cert is used to authenticate to MS Graph and read emails from a specific folder in the mailbox.</p>
+    </p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('KaseyacodeSnippet', this)">View Code Snippet</button>
+        <pre id="KaseyacodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        #These lines get the encypted cert thumbprint and decrypt it, then use it to authenticate to MS Graph.
+        $cert = Get-ChildItem "Cert:\LocalMachine\My\$([pscredential]::new('u', $(Get-Content "$CredsFolder\certthumbprintcode.txt" 
+            | ConvertTo-SecureString)).GetNetworkCredential().Password)"
+        Connect-MgGraph -ClientID $([pscredential]::new('u', $(Get-Content "$CredsFolder\appidcode.txt" | ConvertTo-SecureString)).
+            GetNetworkCredential().Password) -TenantId $([pscredential]::new('u', $(Get-Content "$CredsFolder\tenantidcode.txt" | ConvertTo-SecureString)).GetNetworkCredential().Password) -Certificate $cert
+        $User = "user@company.com" #The email address of the mailbox to read from
+        $AlertFolderID = "id of the folder to read from"
+        $ArchiveFolderID = "id of the folder to move emails to after processing"
+        
+        #This line reads all unread alerts from the mailbox.
+        $UnreadAlerts = Get-MgUserMailFolderMessage -MailFolderId $AlertFolderID -UserId $User -Filter "IsRead eq false" -All
+
+        #The next line filters the emails to those that have 'New' in the subject.
+        $UnreadNewAlerts = $UnreadAlerts | Where {$_.Subject -like '*Resolution State: New'} | Sort-Object -Property ReceivedDateTime
+
+        #The next line filters the emails to those that have 'Closed' in the subject.
+        $UnreadClosedAlerts = $UnreadAlerts | Where {$_.Subject -like '*Resolution State: Closed'} | Sort-Object -Property ReceivedDateTime
+
+        #If there are unread emails to process, the script logs the number of new and closed alerts and these are processed in the subsequent blocks of code
+        if ($UnreadAlerts.count -eq 0) {
+            "$(Get-Date),AlertProcessingStarting-ZeroAlerts" | Out-File -Append $LogFile -Encoding UTF8
+        } else {
+            "$(Get-Date),Alert processing starting. There are $($UnreadNewAlerts.count) New alerts and $($UnreadClosedAlerts.count) Closed alerts to process" | Out-File -Append $LogFile -Encoding UTF8
+        }         
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('KaseyacodeSnippet')" style="display: none;" id="hide-KaseyacodeSnippet">Hide Code Snippet</button>
+    </div>
 </div>
 {% endblock %}
+
+

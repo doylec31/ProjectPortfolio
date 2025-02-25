@@ -3,11 +3,30 @@
 {% load static %}
 
 {% block content %}
-<h1>This is project 4</h1>
+<h1>Project 9: Kaseya Ticket Query</h1>
 <div class="step">
-    <h2>Step 1: Project Setup</h2>
-    <p>Description of setup process...</p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1')">View Screenshot</button>
-    <img src="{% static 'portfolio/screenshots/project1/setup.png' %}" id="screenshot1" class="screenshot" alt="Project Setup">
+    <h2>Introduction</h2>
+    <p>There were a number of requirements to programmatically query the status of Kaseya tickets and change the status of tickets to Closed.</p>
+    <p>This is a snippet of code which connects to Kaseya API and retrieves open tickets from the Kaseya Service Desk module that have synced to Autotask.</p>
+    <p>Kaseya returns 100 items at a time so the loop allows for this and sends multiple requests until all tickets have been retrieved.</p>
+    <p>The tickets are stored in the $Results variable.</p>
+
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('KaseyacodeSnippet', this)">View Code Snippet</button>
+        <pre id="KaseyacodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        do  {  
+            $uri = "https://kaseya vsa url goes here/api/v1.0/automation/servicedesks/kaseya servicedesk id goes here/tickets?`$filter=TicketStatus eq 'PSASync'" 
+              + '&$top=100&$skip=' + "$NumberTicketsReturned" + '&$orderby=TicketRef desc'
+            $result = invoke-restmethod -uri $uri -Headers @{'Authorization'="Bearer $token"} -Method Get -ContentType application/json
+            $NumberTotalTickets = $result.TotalRecords
+            $NumberTicketsReturned += $result.result.count
+            "$(Get-Date),$NumberTicketsReturned of $NumberTotalTickets Kaseya Service Desk tickets returned" >> $LogFile
+            $Results += $result.result
+        } while($NumberTicketsReturned -lt $NumberTotalTickets)             
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('KaseyacodeSnippet')" style="display: none;" id="hide-KaseyacodeSnippet">Hide Code Snippet</button>
+    </div>
 </div>
 {% endblock %}

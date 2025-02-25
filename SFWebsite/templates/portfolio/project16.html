@@ -1,0 +1,27 @@
+{% extends 'portfolio/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Project 9: Delete Kaseya Agents</h1>
+<div class="step">
+    <h2>Delete Old Kaseya Agents</h2>
+    <p>There was a requirement to delete agents that hadn't checked in in a long time.</p>
+    <p>These were workstations that hadn't checked in for a few months or had been rebuilt and a new agent installed. </p>
+    <p>The code snippet below shows how the agents were deleted using the Kaseya API.</p>
+    <p>The agents to delete were determined earlier in the script and stored in the $AgentsToDelete variable.</p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('KaseyacodeSnippet', this)">View Code Snippet</button>
+        <pre id="KaseyacodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        foreach ($AgentToDelete in $AgentsToDelete) {
+            $deleteurl = "https://url of kaseya vsa/api/v1.0/assetmgmt/agents/$($AgentToDelete.Agentid)/false"
+            $result = invoke-restmethod -uri $deleteurl -Headers @{'Authorization'="Bearer $token"} -Method Delete -ContentType application/json
+            "$(Get-Date),AgentDeleted,$($AgentToDelete.Agentid),$($AgentToDelete.AgentName),$($result.Result),$($result.ResponseCode),$($result.Status),$($result.Error)" >> $LogFile   
+        }          
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('KaseyacodeSnippet')" style="display: none;" id="hide-KaseyacodeSnippet">Hide Code Snippet</button>
+    </div>
+</div>
+{% endblock %}
