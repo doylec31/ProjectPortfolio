@@ -143,14 +143,16 @@
                 <div class="tag" data-tag="msgraph">MSGraph</div>
                 <div class="tag" data-tag="kaseya">Kaseya</div>
                 <div class="tag" data-tag="azure">Azure</div>
+                <div class="tag" data-tag="sprint">Sprint</div>
+                <div class="tag" data-tag="scrum">Scrum</div>
+                <div class="tag" data-tag="kanban">Kanban</div>
             </div>
         </div>
         <div id="project-list">
-            <a href="{% url 'project_detail' 'project1' %}" class="project-link" data-tags="powershell,autotask,api,logicmonitor">
-                <span class="project-title">Project1: LogicMonitor - Autotask Integration</span>
+            <a href="{% url 'project_detail' 'project1' %}" class="project-link" data-tags="powershell,api,logicmonitor">
+                <span class="project-title">Project1: LogicMonitor Automation</span>
                 <div class="project-tags">
                     <span class="project-tag">Powershell</span>
-                    <span class="project-tag">Autotask</span>
                     <span class="project-tag">API</span>
                     <span class="project-tag">LogicMonitor</span>
                 </div>
@@ -162,11 +164,12 @@
                     <span class="project-tag">CD</span>
                 </div>
             </a>
-            <a href="{% url 'project_detail' 'project3' %}" class="project-link" data-tags="python,ml">
-                <span class="project-title">Project3: App Dev Using Microservices and Serverless</span>
+            <a href="{% url 'project_detail' 'project3' %}" class="project-link" data-tags="powershell,api,autotask">
+                <span class="project-title">Project 3: Autotask Automation</span>
                 <div class="project-tags">
-                    <span class="project-tag">Python</span>
-                    <span class="project-tag">ML</span>
+                    <span class="project-tag">Powershell</span>
+                    <span class="project-tag">API</span>
+                    <span class="project-tag">Autotask</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project4' %}" class="project-link" data-tags="docker,kubernetes,openshift">
@@ -253,11 +256,12 @@
                     <span class="project-tag">Azure</span>
                 </div>
             </a>
-            <a href="{% url 'project_detail' 'project15' %}" class="project-link" data-tags="data,ml">
-                <span class="project-title">Project15: Data Engineering Capstone Project</span>
+            <a href="{% url 'project_detail' 'project15' %}" class="project-link" data-tags="sprint,scrum,kanban">
+                <span class="project-title">Project 15: Sprint/Scrum Methodology Using Kanban Chart</span>
                 <div class="project-tags">
-                    <span class="project-tag">Data</span>
-                    <span class="project-tag">ML</span>
+                    <span class="project-tag">Sprint</span>
+                    <span class="project-tag">Scrum</span>
+                    <span class="project-tag">Kanban</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project16' %}" class="project-link" data-tags="powershell,api,kaseya">

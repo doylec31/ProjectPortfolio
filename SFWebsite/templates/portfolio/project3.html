@@ -3,11 +3,122 @@
 {% load static %}
 
 {% block content %}
-<h1>This is project 3</h1>
+
+<h1>Project 3: Autotask Automation</h1>
 <div class="step">
-    <h2>Step 1: Project Setup</h2>
-    <p>Description of setup process...</p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1')">View Screenshot</button>
-    <img src="{% static 'portfolio/project1/setup.png' %}" id="screenshot1" class="screenshot" alt="Project Setup">
+    <h2>Introduction</h2>
+    <p>This project shows the automation of Autotask PSA application using its REST API.</p>
+    <p>Autotask is a PSA (Professional Services Automation) tool that is used to manage tickets, projects, and billing. </p>
+    <p>I wrote Powershell functions in the form of Powershell cmdlets to carry out tasks such as creating a new ticket, updating a ticket, and adding a note to a ticket.
+    <p>The functions were added to a psm1 module file. This module could then be imported into any script to allow programmatic interaction with Autotask.</p>
+    <br>
+    <br>
+    <h2>Sample Functions</h2>
+    <p> Here's a couple of examples of functions. The first function gets the details of a ticket by ID and the second function updates the status of a ticket.</p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('ATModulecodeSnippet1', this)">View Code Snippet</button>
+        <pre id="ATModulecodeSnippet1" class="code-snippet" style="display: none;">
+            <code>
+        function Get-AutotaskTicketDetailsByID ($headers, $TicketID) {
+            $baseurl = #Autotask url goes here
+            $Endpoint = "Tickets/query"
+            $filter = "?search={'filter':[{'op':'eq','field':'id','value':'$TicketID'}]}"
+            $url = $baseurl + $Endpoint + $filter
+            $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers
+            $Ticket = $response.items
+            $Ticket = $Ticket | Select id, ticketNumber, title, issueType, subIssueType, assignedResourceID, configurationItemID,  creatorResourceID, companyID, status, createDate, description
+            Return $Ticket
+        }
+
+        function Update-AutotaskTicketStatus ($headers, $ID, $Status) {
+
+            switch ($Status) {
+                'Scheduled' { $TicketStatus = 14 }
+                'Updated' { $TicketStatus = 15 }
+                Default { $TicketStatus = 15}
+            }
+            
+            $body = {} | Select ID, status
+            $body.ID = $ID
+            $body.status = $TicketStatus
+            $body = $body | ConvertTo-Json
+            
+            $response = $Null
+            $response = Invoke-RestMethod 'https://<url>/v1.0/Tickets' -Method 'PATCH' -Headers $headers -Body $body
+            #$response | ConvertTo-Json
+            
+            $TicketID = $response.itemId
+            Return $TicketID
+        }
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('ATModulecodeSnippet1')" style="display: none;" id="hide-ATModulecodeSnippet1">Hide Code Snippet</button>
+    </div>
+    <br>
+    <br>
+    <h2>Create a Ticket</h2>
+    <p>Here is one section of code that creates a ticket in Autotask, adds the ticket details to a list and logs it.</p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('MainScriptcodeSnippet', this)">View Code Snippet</button>
+        <pre id="MainScriptcodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+
+        #Get the company id and create a ticket. Other values such as priority, title, and description are calculated elsewhere in the script.
+        $CompanyID = Get-CompanyID -MonitorObjectId $AlertToProcess.monitorObjectId -MonitorObjectType $AlertToProcess.monitorObjectType
+        $NewTicket = Create-AutotaskTicket -headers $ATheaders -CompanyID $CompanyID -Priority $Priority -Title $Title -Description $Description
+        "$(Get-Date),NoPreviousTicket-CreateNewTicket,$($AlertToProcess.monitorObjectName),$($AlertToProcess.id),$($AlertToProcess.internalId)" >> $LogFile
+        "$(Get-Date),TicketCreated,$($AlertToProcess.id),$($AlertToProcess.internalId),$($AlertToProcess.monitorObjectName),$($NewTicket.TicketID),$($NewTicket.TicketNumber)" >> $LogFile
+        "$($AlertToProcess.id)" | Out-File $OpenAlertsFile -append -Encoding UTF8
+        
+        #Add the new ticket to the list of previously created tickets
+        $ThisTicket = {} | Select Date, Id, InternalId, Asset, ATTicketID, ATTicketNum
+        $ThisTicket.Date = Get-Date
+        $ThisTicket.Id = $AlertToProcess.Id
+        $ThisTicket.InternalId = $AlertToProcess.internalId
+        $ThisTicket.Asset = $AlertToProcess.monitorObjectName
+        $ThisTicket.ATTicketID = $NewTicket.TicketID
+        $ThisTicket.ATTicketNum = $NewTicket.TicketNumber
+        $PreviouslyCreatedTicketsAndNotes += $ThisTicket
+        "$(Get-Date),PreviouslyCreatedTicketsAndNotesListUpdated,$($PreviouslyCreatedTicketsAndNotes.count) tickets in list" >> $LogFile
+
+        #Check for errors and log them.
+        if ($Error.count -gt 0) {
+            $AllErrors += $Error.Count
+            "$(Get-Date),Phase9-ErrorEncountered,$($Error.Count) error(s) encountered" >> $LogFile
+            foreach ($Err in $Error) {
+                $Error.Exception.ToString() >> $LogFile
+                $Error.ErrorDetails.ToString() >> $LogFile
+            }
+        }
+        $error.Clear()
+    }
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('MainScriptcodeSnippet')" style="display: none;" id="hide-MainScriptcodeSnippet">Hide Code Snippet</button>
+    </div>
+    <br>
+    <br>
+    <h2>Headers for Authentication</h2>
+    <p>I used a method recommended by Microsoft to encrypt the credentials and store them in a file.</p
+    <p>At run time, the script reads the encrypted credentials from the files and decrypts them.</p>
+    <p>The $ATHeaders object can then be passed as a parameter to any function that will interact with Autotask.</p>
+
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('CredentialscodeSnippet', this)">View Code Snippet</button>
+        <pre id="CredentialscodeSnippet" class="code-snippet" style="display: none;">
+            <code>
+        $ATheaders = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+        $apiintcode = [pscredential]::new('u', $(Get-Content "$CredsFolder\apiintcode.txt" | ConvertTo-SecureString)).GetNetworkCredential().Password
+        $ATheaders.Add("ApiIntegrationCode", $apiintcode)
+        $atusercode = [pscredential]::new('u', $(Get-Content "$CredsFolder\atusercode.txt" | ConvertTo-SecureString)).GetNetworkCredential().Password
+        $ATheaders.Add("UserName", $atusercode)
+        $atseccode = [pscredential]::new('u', $(Get-Content "$CredsFolder\atseccode.txt" | ConvertTo-SecureString)).GetNetworkCredential().Password
+        $ATheaders.Add("Secret", $atseccode)
+        $ATheaders.Add("Content-Type", "application/json")
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('CredentialscodeSnippet')" style="display: none;" id="hide-CredentialscodeSnippet">Hide Code Snippet</button>
+    </div>
 </div>
+
 {% endblock %}

@@ -3,11 +3,37 @@
 {% load static %}
 
 {% block content %}
-<h1>This is project 4</h1>
+<h1>Project 15: Scrum Methodology Using Kanban Chart</h1>
 <div class="step">
-    <h2>Step 1: Project Setup</h2>
-    <p>Description of setup process...</p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1')">View Screenshot</button>
-    <img src="{% static 'portfolio/screenshots/project1/setup.png' %}" id="screenshot1" class="screenshot" alt="Project Setup">
+    <h2>Introduction</h2>
+    <p>This project shows the management of a software project using a Kanban Board.</p>
+    <p>The Kanban board is created as a Project in GitHub.</p>
+    <p>The screenshots show a template for user stories, a sample user story, 
+        the user stories for the project in the Product Backlog, estimates and labels and sprints assigned,
+        and the user stories moving across the board to Done as the work is completed.</p>
+    <br>
+    <br>
+    <h2>User Story Template</h2>
+    <p>The user story template is created in GitHub by navigating to the Settings tab of your repository, then clicking on Set up Templates.</p>
+    <p>Once created it can be used to create user stories as issues in the Issues tab or directly on the Kanban board.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('userstorytemplate', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project15/userstorytemplate.png' %}" id="userstorytemplate" class="screenshot" alt="userstorytemplate">
+    <button class="hide-btn" onclick="hideScreenshot('userstorytemplate')" style="display: none;" id="hide-userstorytemplate">Hide Screenshot</button>
 </div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Kanban Board</h2>
+    <p>The kanban board is created in GitHub by navigating to the Projects tab of your repository, then clicking on Set up Templates.</p>
+    <p>Once created it can be modified to have the columns you require.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('createkanban', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project15/createkanban.png' %}" id="createkanban" class="screenshot" alt="createkanban">
+    <button class="hide-btn" onclick="hideScreenshot('createkanban')" style="display: none;" id="hide-createkanban">Hide Screenshot</button>
+</div>
+
 {% endblock %}
