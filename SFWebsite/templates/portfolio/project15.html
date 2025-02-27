@@ -15,8 +15,8 @@
     <br>
     <h2>User Story Template</h2>
     <p>The user story template is created in GitHub by navigating to the Settings tab of your repository, then clicking on Set up Templates.</p>
+    <p></p>This creates a file called user-story.md in the .github/ISSUE_TEMPLATE folder of the repo.</p>
     <p>Once created it can be used to create user stories as issues in the Issues tab or directly on the Kanban board.</p>
-    <p></p>
     <p></p>
     <button class="screenshot-btn" onclick="toggleScreenshot('userstorytemplate', this)">View Screenshot</button>
     <img src="{% static 'portfolio/project15/userstorytemplate.png' %}" id="userstorytemplate" class="screenshot" alt="userstorytemplate">
@@ -26,14 +26,41 @@
 <div class="step">
     <br>
     <br>
+    <h2>Sample User Story</h2>
+    <p>A user story should be a well defined piece of work with clear acceptance criteria.</p>
+    <p>Below is an example of one of the user stories created for this sample project.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('sampleuserstory', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project15/sampleuserstory.png' %}" id="sampleuserstory" class="screenshot" alt="sampleuserstory">
+    <button class="hide-btn" onclick="hideScreenshot('sampleuserstory')" style="display: none;" id="hide-sampleuserstory">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
     <h2>Kanban Board</h2>
     <p>The kanban board is created in GitHub by navigating to the Projects tab of your repository, then clicking on Set up Templates.</p>
     <p>Once created it can be modified to have the columns you require.</p>
+    <p>This board has columns for New Issues, Icebox, Product Backlog, Sprint Backlog, In Progress, Test/QA and Done.</p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('kanbanboard', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project15/kanbanboard.png' %}" id="kanbanboard" class="screenshot" alt="kanbanboard">
+    <button class="hide-btn" onclick="hideScreenshot('kanbanboard')" style="display: none;" id="hide-kanbanboard">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Sprint Planning</h2>
+    <p>The kanban board now looks as it would after a sprint planning meeting for Sprint 1.</p>
+    <p>The stories have been added to the Sprint Backlog column, given labels, story point estimates and added to Sprint 1.</p>
+    <p>Once the sprint starts, team members can assign the stories to themselves, move them to the In Progress column and begin work.</p>
     <p></p>
     <p></p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('createkanban', this)">View Screenshot</button>
-    <img src="{% static 'portfolio/project15/createkanban.png' %}" id="createkanban" class="screenshot" alt="createkanban">
-    <button class="hide-btn" onclick="hideScreenshot('createkanban')" style="display: none;" id="hide-createkanban">Hide Screenshot</button>
+    <button class="screenshot-btn" onclick="toggleScreenshot('sprintplanning', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project15/sprintplanning.png' %}" id="sprintplanning" class="screenshot" alt="sprintplanning">
+    <button class="hide-btn" onclick="hideScreenshot('sprintplanning')" style="display: none;" id="hide-sprintplanning">Hide Screenshot</button>
 </div>
 
 {% endblock %}
