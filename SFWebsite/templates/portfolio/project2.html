@@ -4,12 +4,85 @@
 
 {% block content %}
 
-<h1>Project 2: </h1>
+<h1>Project 2: CI Pipeline with GitHub Actions</h1>
 <div class="step">
-    <h2>Step 2: Project Setup</h2>
-    <p>Description of setup process...</p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1')">View Screenshot</button>
-    <img src="{% static 'portfolio/project2/setup.png' %}" id="screenshot1" class="screenshot" alt="Project Setup">
+    <h2>Introduction</h2>
+    <p>This project shows the creation of a CI pipeline in GitHub Actions.</p>
+    <p>The pipeline is triggered on a push or pull request to the main branch of the repo.</p>
+    <p>The steps in the pipeline are checkout the code, install dependencies, lint and test.</p>
+    <br>
+    <br>
+    <h2>The yaml file</h2>
+    <p>A yaml file call ci-build.yaml is created in the .github/workflows folder of the repo</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('ciyamlfile', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project2/ciyamlfile.png' %}" id="ciyamlfile" class="screenshot" alt="ciyamlfile">
+    <button class="hide-btn" onclick="hideScreenshot('ciyamlfile')" style="display: none;" id="hide-ciyamlfile">Hide Screenshot</button>
 </div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Pipeline Trigger</h2>
+    <p>The pipeline is set to trigger when there is a push or a pull request to the main branch.</p>
+    <p>The "on:" keyword is used.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('pipelinetrigger', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project2/pipelinetrigger.png' %}" id="pipelinetrigger" class="screenshot" alt="pipelinetrigger">
+    <button class="hide-btn" onclick="hideScreenshot('pipelinetrigger')" style="display: none;" id="hide-pipelinetrigger">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Build Job</h2>
+    <p>A build job is created that will run as part of the pipeline.</p>
+    <p>The yaml specifies that the GitHub Actions runner runs the latest version of ubuntu.</p>
+    <p>The code will run in a container created from the python:3.9-slim image.</p>
+    <p>The code requires a postgresql database so that that is created in the services section using the postgres:alpine image.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('buildjob', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project2/buildjob.png' %}" id="buildjob" class="screenshot" alt="buildjob">
+    <button class="hide-btn" onclick="hideScreenshot('buildjob')" style="display: none;" id="hide-buildjob">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Pipeline Steps</h2>
+    <p>The pipeline has 4 steps: Checkout, Install dependencies, Lint with flake8 and Run unit tests with nose.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('pipelinesteps', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project2/pipelinesteps.png' %}" id="pipelinesteps" class="screenshot" alt="pipelinesteps">
+    <button class="hide-btn" onclick="hideScreenshot('pipelinesteps')" style="display: none;" id="hide-pipelinesteps">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Pipeline Runs</h2>
+    <p>Once the pipeline yaml file is created correctly, the pipeline will run when there is a push or a pull request to the main branch.</p>
+    <p>The details of all pipeline runs can be seen in the Actions tab in GitHub</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('pipelineruns', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project2/pipelineruns.png' %}" id="pipelineruns" class="screenshot" alt="pipelineruns">
+    <button class="hide-btn" onclick="hideScreenshot('pipelineruns')" style="display: none;" id="hide-pipelineruns">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Pipeline Run Details</h2>
+    <p>Select a pileline run from the list to view details of the job steps.</p>
+    <p>Each step can be expanded to see more details.</p>
+    <p>This screenshot shows the steps with the lint and nosetests steps expanded.</p>
+    <p>The green tick beside the "build" job shows that all steps in the job ran successfully.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('pipelinestepdetails', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project2/pipelinestepdetails.png' %}" id="pipelinestepdetails" class="screenshot" alt="pipelinestepdetails">
+    <button class="hide-btn" onclick="hideScreenshot('pipelinestepdetails')" style="display: none;" id="hide-pipelinestepdetails">Hide Screenshot</button>
+</div>
+
 
 {% endblock %}

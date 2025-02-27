@@ -126,8 +126,7 @@
                 <div class="tag" data-tag="database">Database</div>
                 <div class="tag" data-tag="ml">Machine Learning</div>
                 <div class="tag" data-tag="openshift">OpenShift</div>
-                <div class="tag" data-tag="ci">CI</div>
-                <div class="tag" data-tag="cd">CD</div>
+                <div class="tag" data-tag="cicd">CI/CD</div>
                 <div class="tag" data-tag="docker">Docker</div>
                 <div class="tag" data-tag="kubernetes">Kubernetes</div>
                 <div class="tag" data-tag="ai">AI</div>
@@ -147,6 +146,8 @@
                 <div class="tag" data-tag="scrum">Scrum</div>
                 <div class="tag" data-tag="kanban">Kanban</div>
                 <div class="tag" data-tag="github">GitHub</div>
+                <div class="tag" data-tag="yaml">YAML</div>
+
             </div>
         </div>
         <div id="project-list">
@@ -158,11 +159,13 @@
                     <span class="project-tag">LogicMonitor</span>
                 </div>
             </a>
-            <a href="{% url 'project_detail' 'project2' %}" class="project-link" data-tags="ci,cd">
-                <span class="project-title">Project 2: Continuous Integration and Delivery</span>
+            <a href="{% url 'project_detail' 'project2' %}" class="project-link" data-tags="cicd,github,python,yaml">
+                <span class="project-title">Project 2: CI Pipeline with GitHub Actions</span>
                 <div class="project-tags">
-                    <span class="project-tag">CI</span>
-                    <span class="project-tag">CD</span>
+                    <span class="project-tag">CI/CD</span>
+                    <span class="project-tag">GitHub</span>
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">YAML</span>
                 </div>
             </a>
             <a href="{% url 'project_detail' 'project3' %}" class="project-link" data-tags="powershell,api,autotask">
