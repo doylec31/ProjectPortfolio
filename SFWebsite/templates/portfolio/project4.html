@@ -3,11 +3,69 @@
 {% load static %}
 
 {% block content %}
-<h1>Project 4: Under Construction</h1>
+<h1>Project 4: Build a Docker Image from a Dockerfile</h1>
+
 <div class="step">
-    <h2>Step 1: Project Setup</h2>
-    <p>Description of setup process...</p>
-    <button class="screenshot-btn" onclick="toggleScreenshot('screenshot1')">View Screenshot</button>
-    <img src="{% static 'portfolio/project1/setup.png' %}" id="screenshot1" class="screenshot" alt="Project Setup">
+    <h2>Introduction</h2>
+    <p>This project shows how to build a docker image of a simple Flask application from a Dockerfile.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <br>
+    <br>
+    <h2>The App</h2>
+    <p>This screenshot shows the app running locally. It has not yey been dockerized.</p>
+    <p>The contents of the application app.py file are shown.</p>
+    <p>When the web app is accessed it simply says Welcome. This is also visible in the screenshot.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('pythonapp', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project4/pythonapp.png' %}" id="pythonapp" class="screenshot" alt="pythonapp">
+    <button class="hide-btn" onclick="hideScreenshot('pythonapp')" style="display: none;" id="hide-pythonapp">Hide Screenshot</button>
 </div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Docker File</h2>
+    <p>This screenshot shows the Dockerfile used to build the image.</p>
+    <p>It is build using the python:3.6-alpine base image</p>
+    <p>The flask dependency is installed.</p>
+    <p>The app files are copied to /opt inside the container.</p>
+    <p>Container port 8080 is exposed to allow the web app to be accessed.</p>
+    <p>The ENTRYPOINT command is used to run the app when the container starts.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('dockerfile', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project4/dockerfile.png' %}" id="dockerfile" class="screenshot" alt="dockerfile">
+    <button class="hide-btn" onclick="hideScreenshot('dockerfile')" style="display: none;" id="hide-dockerfile">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Building the Image</h2>
+    <p>This screenshot shows the image being built from the Dockerfile.</p>
+    <p>It is build using command "docker build -t doylec31-color:lite ."</p>
+    <p>Once complete, the image is visible using "docker images".</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('buildimage', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project4/buildimage.png' %}" id="buildimage" class="screenshot" alt="build">
+    <button class="hide-btn" onclick="hideScreenshot('buildimage')" style="display: none;" id="hide-buildimage">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Running the Container</h2>
+    <p>This screenshot shows the container being created from the image.</p>
+    <p>It is build using command "docker run -p 8282:8080 doylec31-color:lite"</p>
+    <p>Host port 8282 is mapped to container port 8080 so the app can be accessed from the host.</p>
+    <p>Once complete, the container is visible using "docker ps".</p>
+    <p>The app is accessible at http://127.0.0.1:8282</p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('runcontainer', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project4/runcontainer.png' %}" id="runcontainer" class="screenshot" alt="runcontainer">
+    <button class="hide-btn" onclick="hideScreenshot('runcontainer')" style="display: none;" id="hide-runcontainer">Hide Screenshot</button>
+</div>
+
 {% endblock %}

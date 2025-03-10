@@ -9,6 +9,8 @@
     <h2>Introduction</h2>
     <p>This project shows the creation of a CI pipeline in GitHub Actions.</p>
     <p>The pipeline is triggered on a push or pull request to the main branch of the repo.</p>
+    <p>The repo contains a Python Flask project that has REST API endpoints for creating and viewing accounts in a database.</p>
+    <p>The Flask project was created using Test Driven Development (TDD) and there are unittests for models.py and routes.py.</p>
     <p>The steps in the pipeline are checkout the code, install dependencies, lint and test.</p>
     <br>
     <br>
@@ -53,6 +55,8 @@
     <br>
     <h2>The Pipeline Steps</h2>
     <p>The pipeline has 4 steps: Checkout, Install dependencies, Lint with flake8 and Run unit tests with nose.</p>
+    <p>The Checkout step uses "actions/checkout@v2" which is an official GitHub Action for checking out code. It is available from the GitHub Marketplace.</p>
+    <p>The other 3 steps use the "run" keyword and specify bash commands and scripts which run in the python:3.9-slim container.</p>
     <button class="screenshot-btn" onclick="toggleScreenshot('pipelinesteps', this)">View Screenshot</button>
     <img src="{% static 'portfolio/project2/pipelinesteps.png' %}" id="pipelinesteps" class="screenshot" alt="pipelinesteps">
     <button class="hide-btn" onclick="hideScreenshot('pipelinesteps')" style="display: none;" id="hide-pipelinesteps">Hide Screenshot</button>
