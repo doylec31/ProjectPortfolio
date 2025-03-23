@@ -1,0 +1,69 @@
+{% extends 'portfolio/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Project17: Implementing a Kubernetes Deployment</h1>
+
+<div class="step">
+    <h2>Introduction</h2>
+    <p>This project demonstrates the implementation of a Kubernetes deployment.</p>
+    <p>The deployment is for a simple web application that displays a welcome message.</p>
+    <p>The application is deployed to a single node Kubernetes cluster provided by Docker Desktop.</p>
+    <br>
+    <br>
+    <h2>The YAML File</h2>
+    <p>This screenshot shows the yaml file for the deployment.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('yamlfile', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project17/yamlfile.png' %}" id="yamlfile" class="screenshot" alt="yamlfile">
+    <button class="hide-btn" onclick="hideScreenshot('yamlfile')" style="display: none;" id="hide-yamlfile">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Creating the Deployment</h2>
+    <p>This screenshot shows the deployment being created from the yaml file.</p>
+    <p><The kubectl get all command then shows the kubernetes objects that were created, 6 pods, a replicaset and the deployment itself./p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('createdeployment', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project17/createdeployment.png' %}" id="createdeployment" class="screenshot" alt="createdeployment">
+    <button class="hide-btn" onclick="hideScreenshot('createdeployment')" style="display: none;" id="hide-createdeployment">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Describe the Deployment</h2>
+    <p>This screenshot shows the output of the kucectl describe command for the deployment.</p>
+    <p>Although not specified in the deployment yaml file the StrategyType is RollingUpdate which is the default update type.</p>
+    <p>In this strategy pods are replaced one at a time so the app is always available.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('describedeployment', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project17/describedeployment.png' %}" id="describedeployment" class="screenshot" alt="describedeployment">
+    <button class="hide-btn" onclick="hideScreenshot('describedeployment')" style="display: none;" id="hide-describedeployment">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Rollout</h2>
+    <p>This screenshot shows how various commands are used to check the status of kubernetes rollout.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('dockerfile', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project17/dockerfile.png' %}" id="dockerfile" class="screenshot" alt="dockerfile">
+    <button class="hide-btn" onclick="hideScreenshot('dockerfile')" style="display: none;" id="hide-dockerfile">Hide Screenshot</button>
+</div>
+
+{% endblock %}

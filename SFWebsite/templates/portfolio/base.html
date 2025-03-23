@@ -134,7 +134,7 @@
                 <div class="tag" data-tag="bash">Bash</div>
                 <div class="tag" data-tag="azure">Azure</div>
                 <div class="tag" data-tag="iac">IaC</div>
-                <div class="tag" data-tag="data">Data</div>
+                <div class="tag" data-tag="dataengineering">Data Engineering</div>
                 <div class="tag" data-tag="dataanalysis">Data Analysis</div>
                 <div class="tag" data-tag="powershell">Powershell</div>
                 <div class="tag" data-tag="autotask">Autotask</div>
@@ -147,7 +147,8 @@
                 <div class="tag" data-tag="kanban">Kanban</div>
                 <div class="tag" data-tag="github">GitHub</div>
                 <div class="tag" data-tag="yaml">YAML</div>
-
+                <div class="tag" data-tag="docker">Docker</div>
+                <div class="tag" data-tag="etlpipeline">ETL Pipeline</div>
             </div>
         </div>
         <div id="project-list">
@@ -273,6 +274,20 @@
                     <span class="project-tag">Powershell</span>
                     <span class="project-tag">API</span>
                     <span class="project-tag">Kaseya</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project17' %}" class="project-link" data-tags="kubernetes">
+                <span class="project-title">Project17: Implementing a Kubernetes Deployment</span>
+                <div class="project-tags">
+                    <span class="project-tag">Kubernetes</span>
+                </div>
+            </a>
+            <a href="{% url 'project_detail' 'project18' %}" class="project-link" data-tags="python,etlpipeline,dataengineering">
+                <span class="project-title">Project18: Building an ETL (Extract, Transform, Load) Pipeline</span>
+                <div class="project-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">ETL Pipeline</span>
+                    <span class="project-tag">Data Engineering</span>
                 </div>
             </a>
         </div>

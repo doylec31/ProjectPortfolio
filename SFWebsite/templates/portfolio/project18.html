@@ -1,0 +1,244 @@
+{% extends 'portfolio/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Project18: Building an ETL (Extract, Transform, Load) Pipeline</h1>
+
+<div class="step">
+    <h2>Introduction</h2>
+    <p>This project demonstrates how to build an ETL pipeline.</p>
+    <p>The data used is in 3 formats: csv, json and xml.</p>
+    <p>The data is transformed into a common format.</p>
+    <p>It is then stored in a csv file called transformed_data.csv from where it is loaded into a database table.</p>
+    <p>Actions will be logged to a log file called log_file.txt.</p>
+    <br>
+    <br>
+    <h2>The Project Folder</h2>
+    <p>This screenshot shows the project folder in VSCode with the raw data files and the Python file etl_code.py.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('projectfolder', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project18/projectfolder.png' %}" id="projectfolder" class="screenshot" alt="projectfolder">
+    <button class="hide-btn" onclick="hideScreenshot('projectfolder')" style="display: none;" id="hide-projectfolder">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Extracting Data</h2>
+    <p>This code snippet shows the functions for extracting data from the csv, json and xml files.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('ExtractSnippet', this)">View Code Snippet</button>
+        <pre id="ExtractSnippet" class="code-snippet" style="display: none;">
+            <code>
+    def extract_data():
+        def extract_from_csv():
+            csv_files = glob.glob("*.csv")
+            data = []
+            for file in csv_files:
+                if file != target_file:
+                    df = pd.read_csv(file)
+                    data.append(df)
+            return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
+
+        def extract_from_json():
+            json_files = glob.glob("*.json")
+            data = []
+            for file in json_files:
+                df = pd.read_json(file, lines=True)
+                data.append(df)
+            return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
+
+        def extract_from_xml():
+            xml_files = glob.glob("*.xml")
+            data = []
+            for file in xml_files:
+                tree = ET.parse(file)
+                root = tree.getroot()
+
+                for i in root.findall('person'):
+                    record = {
+                        "name": i.find('name').text,
+                        "height": i.find('height').text,
+                        "weight": i.find('weight').text
+                    }
+                    data.append(record)
+            return pd.DataFrame(data)
+
+        # Extract data from each source
+        csv_data = extract_from_csv()
+        json_data = extract_from_json()
+        xml_data = extract_from_xml()
+        
+        # Combine all data sources
+        combined_data = pd.DataFrame()
+        
+        if not csv_data.empty:
+            combined_data = csv_data
+        
+        if not json_data.empty:
+            combined_data = pd.concat([combined_data, json_data], ignore_index=True) if not combined_data.empty else json_data
+        
+        if not xml_data.empty:
+            combined_data = pd.concat([combined_data, xml_data], ignore_index=True) if not combined_data.empty else xml_data
+        
+        return combined_data
+        
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('ExtractSnippet')" style="display: none;" id="hide-ExtractSnippet">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Transforming Data</h2>
+    <p>The data in the files has weight in pounds and height in inches.</p>
+    <p>Now that it is extracted we wanted to transform it into the desired units, weight in kg and height in metres.</p>
+    <p>This code snippet shows a function that does the conversion on the dataframe.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('TransformSnippet', this)">View Code Snippet</button>
+        <pre id="TransformSnippet" class="code-snippet" style="display: none;">
+            <code>
+        def transform(data): 
+            '''Convert inches to meters and round off to two decimals 
+            1 inch is 0.0254 meters '''
+            data['height'] = data['height'].astype(float)
+            data['height'] = round(data.height * 0.0254,2) 
+        
+            '''Convert pounds to kilograms and round off to two decimals 
+            1 pound is 0.45359237 kilograms '''
+            data['weight'] = data['weight'].astype(float)
+            data['weight'] = round(data.weight * 0.45359237,2) 
+            
+            return data         
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('TransformSnippet')" style="display: none;" id="hide-TransformSnippet">Hide Code Snippet</button>
+</div>
+
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Loading Data</h2>
+    <p>The data is loaded to a csv file from where it can be loaded to a database table.</p>
+    <p>This function provides this functionality.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('LoadSnippet', this)">View Code Snippet</button>
+        <pre id="LoadSnippet" class="code-snippet" style="display: none;">
+            <code>
+        def load_data(target_file, transformed_data): 
+            transformed_data.to_csv(target_file) 
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('LoadSnippet')" style="display: none;" id="hide-LoadSnippet">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Logging Progress</h2>
+    <p>As the script carries out its tasks we want to log each step for visibility and troubleshooting progress.</p>
+    <p>This function provides this functionality.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('LogProgress', this)">View Code Snippet</button>
+        <pre id="LogProgress" class="code-snippet" style="display: none;">
+            <code>
+    def log_progress(message): 
+        timestamp_format = '%Y-%h-%d-%H:%M:%S' # Year-Monthname-Day-Hour-Minute-Second 
+        now = datetime.now() # get current timestamp 
+        timestamp = now.strftime(timestamp_format) 
+        with open(log_file,"a") as f: 
+            f.write(timestamp + ',' + message + '\n') 
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('LogProgress')" style="display: none;" id="hide-LogProgress">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Main Script</h2>
+    <p>Now that ll the required functions are in place, the main script can be written to perform the ETL process.</p>
+    <p>TThis code snippet shows the main script.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('MainScript', this)">View Code Snippet</button>
+        <pre id="MainScript" class="code-snippet" style="display: none;">
+            <code>
+    # Log the initialization of the ETL process 
+    log_progress("ETL Job Started") 
+        
+    # Log the beginning of the Extraction process 
+    log_progress("Extract phase Started") 
+    extracted_data = extract_data()
+        
+    # Log the completion of the Extraction process 
+    log_progress("Extract phase Ended") 
+        
+    # Log the beginning of the Transformation process 
+    log_progress("Transform phase Started") 
+    transformed_data = transform(extracted_data) 
+    print("Transformed Data") 
+    print(transformed_data) 
+        
+    # Log the completion of the Transformation process 
+    log_progress("Transform phase Ended") 
+        
+    # Log the beginning of the Loading process 
+    log_progress("Load phase Started") 
+    load_data(target_file,transformed_data) 
+        
+    # Log the completion of the Loading process 
+    log_progress("Load phase Ended") 
+        
+    # Log the completion of the ETL process 
+    log_progress("ETL Job Ended") 
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('MainScript')" style="display: none;" id="hide-MainScript">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Transformed Data</h2>
+    <p>This screenshot shows the script running, the extracted and transformed data printed in the terminal and loaded to the csv file.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('transformeddata', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project18/transformeddata.png' %}" id="transformeddata" class="screenshot" alt="transformeddata">
+    <button class="hide-btn" onclick="hideScreenshot('transformeddata')" style="display: none;" id="hide-transformeddata">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Log File</h2>
+    <p>This screenshot shows the contents of the log file after the script has been run.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('logfile', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project18/logfile.png' %}" id="logfile" class="screenshot" alt="logfile">
+    <button class="hide-btn" onclick="hideScreenshot('logfile')" style="display: none;" id="hide-logfile">Hide Screenshot</button>
+</div>
+
+{% endblock %}

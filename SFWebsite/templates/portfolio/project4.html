@@ -15,7 +15,7 @@
     <br>
     <br>
     <h2>The App</h2>
-    <p>This screenshot shows the app running locally. It has not yey been dockerized.</p>
+    <p>This screenshot shows the app running locally. It has not yet been dockerized.</p>
     <p>The contents of the application app.py file are shown.</p>
     <p>When the web app is accessed it simply says Welcome. This is also visible in the screenshot.</p>
     <button class="screenshot-btn" onclick="toggleScreenshot('pythonapp', this)">View Screenshot</button>
@@ -32,7 +32,7 @@
     <p>The flask dependency is installed.</p>
     <p>The app files are copied to /opt inside the container.</p>
     <p>Container port 8080 is exposed to allow the web app to be accessed.</p>
-    <p>The ENTRYPOINT command is used to run the app when the container starts.</p>
+    <p>The ENTRYPOINT instruction is used to run the app when the container starts.</p>
     <button class="screenshot-btn" onclick="toggleScreenshot('dockerfile', this)">View Screenshot</button>
     <img src="{% static 'portfolio/project4/dockerfile.png' %}" id="dockerfile" class="screenshot" alt="dockerfile">
     <button class="hide-btn" onclick="hideScreenshot('dockerfile')" style="display: none;" id="hide-dockerfile">Hide Screenshot</button>
