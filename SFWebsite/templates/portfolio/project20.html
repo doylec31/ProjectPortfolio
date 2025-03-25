@@ -1,0 +1,125 @@
+{% extends 'portfolio/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Project20: Building an ETL (Extract, Transform, Load) Pipeline - Bank Market CAP Data</h1>
+
+<div class="step">
+    <h2>Introduction</h2>
+    <p>This project demonstrates how to build an ETL pipeline.</p>
+    <p>Data about market cap of the largest banks will be extracted and transformed and loaded to a csv file and database table.</p>
+    <p>The data is available at the archived Wikipedia page: https://web.archive.org/web/20230908091635%20/https://en.wikipedia.org/wiki/List_of_largest_banks</p>
+    <p>Actions will be logged to a log file.</p>
+    <br>
+    <br>
+    <h2>The Web Page</h2>
+    <p>This screenshot shows the archived Wikipedia page with the table from which the data will be extracted.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('webpage', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/webpage.png' %}" id="webpage" class="screenshot" alt="webpage">
+    <button class="hide-btn" onclick="hideScreenshot('webpage')" style="display: none;" id="hide-webpage">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Project Folder</h2>
+    <p>This screenshot shows the project folder in VSCode with the Python file banks_project.py.</p>
+    <p>It shows the required dependencies being imported.</p>
+    <p>These have already been installed into the virtual environment using pip where required.</p>
+    <p>Variables required by the script are also shown.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('projectfolder', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/projectfolder.png' %}" id="projectfolder" class="screenshot" alt="projectfolder">
+    <button class="hide-btn" onclick="hideScreenshot('projectfolder')" style="display: none;" id="hide-projectfolder">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Extracting Data</h2>
+    <p>This cscreenshot shows the function for extracting data from the web page using requests and BeautifulSoup.</p>
+    <p>The relevant data is in the first table on the page.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('extract', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/extract.png' %}" id="extract" class="screenshot" alt="extract">
+    <button class="hide-btn" onclick="hideScreenshot('extract')" style="display: none;" id="hide-extract">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Transforming Data</h2>
+    <p>The extracted data has market cap values in US$ billion.</p>
+    <p>As well as this we also want the market cap in GBP, EUR and INR (Indian Rupee)</p>
+    <p>For the purposes of this project the exchange rate data for these currencies is supplied in a csv file in the project folder.</p>
+    <p>The transformed data will have 3 extra columns for the additional currencies.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('transform', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/transform.png' %}" id="transform" class="screenshot" alt="transform">
+    <button class="hide-btn" onclick="hideScreenshot('transform')" style="display: none;" id="hide-transform">Hide Screenshot</button>
+</div>
+
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Loading Data</h2>
+    <p>We want to load the data to a csv file and also to a database table.</p>
+    <p>The screenshot shows 2 functions, one for each.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('load', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/load.png' %}" id="load" class="screenshot" alt="load">
+    <button class="hide-btn" onclick="hideScreenshot('load')" style="display: none;" id="hide-load">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Running a query on the database.</h2>
+    <p>Once the extracted and transformed data has been loaded to a database table, we want to check we can run queries as required.</p>
+    <p>The code snippet shows a function to do this.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('runquery', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/runquery.png' %}" id="runquery" class="screenshot" alt="runquery">
+    <button class="hide-btn" onclick="hideScreenshot('runquery')" style="display: none;" id="hide-runquery">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Logging Progress</h2>
+    <p>As the script carries out its tasks we want to log each step for visibility and troubleshooting purposes.</p>
+    <p>This function provides this functionality.</p>
+    <p>A message can be passed as a parameter to this function and it will log it in the log file.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('logprogress', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/logprogress.png' %}" id="logprogress" class="screenshot" alt="logprogress">
+    <button class="hide-btn" onclick="hideScreenshot('logprogress')" style="display: none;" id="hide-logprogress">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Main Script</h2>
+    <p>Now that all the required functions are in place, the main script can be written to perform the ETL process.</p>
+    <p>This code snippet shows the main script.</p>
+    <p>It ends with a number of queries run against the database.</p>
+    <p></p>
+    <p></p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('mainscript', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/mainscript.png' %}" id="mainscript" class="screenshot" alt="mainscript">
+    <button class="hide-btn" onclick="hideScreenshot('mainscript')" style="display: none;" id="hide-mainscript">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Pipeline Run, Console output and Log File</h2>
+    <p?>This screenshot shows the script running and the output.</p?
+    <p>The output of the SQL database queries are printed in the terminal.</p>
+    <p>The transformed data can be seen in the Largest_banks_data.csv file.</p>
+    <p>The screenshot also displays the log file which shows the progress of the script.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('output', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project20/output.png' %}" id="output" class="screenshot" alt="output">
+    <button class="hide-btn" onclick="hideScreenshot('output')" style="display: none;" id="hide-output">Hide Screenshot</button>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends 'portfolio/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Project19: Building an ETL (Extract, Transform, Load) Pipeline - GDP Data from IMF</h1>
+
+<div class="step">
+    <h2>Introduction</h2>
+    <p>This project demonstrates how to build an ETL pipeline.</p>
+    <p>It extracts a list of all countries in order of their GDPs in billion USDs (rounded to 2 decimal places) as logged by the International Monetary Fund (IMF).</p>   <p>The data is transformed into a common format.</p>
+    <p>For convenience I will be using the forecast of 2025 data available at https://en.wikipedia.org/wiki/List_of_countries_by_GDP_%28nominal%29</p>
+    <p>The data will be made accessible in a CSV file Countries_by_GDP.csv as well as a table Countries_by_GDP in a database with attributes Country and GDP_USD_billion.</p>
+    <p>Actions will be logged to a log file called log_file.txt.</p>
+    <br>
+    <br>
+    <h2>The Project Folder</h2>
+    <p>This screenshot shows the project folder in VSCode with the Python file etl_project_gdp.py.</p>
+    <p>It shows the required dependencies being imported.</p>
+    <p>These have already been installed into the virtual environment using pip where required.</p>
+    <p>Variables required by the script are also shown.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('projectfolder', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project19/projectfolder.png' %}" id="projectfolder" class="screenshot" alt="projectfolder">
+    <button class="hide-btn" onclick="hideScreenshot('projectfolder')" style="display: none;" id="hide-projectfolder">Hide Screenshot</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Extracting Data</h2>
+    <p>This code snippet shows the function for extracting data from the web page using requests and BeautifulSoup.</p>
+    <p>The relevant data is in the 3rd table on the page.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('ExtractSnippet', this)">View Code Snippet</button>
+        <pre id="ExtractSnippet" class="code-snippet" style="display: none;">
+            <code>
+    #Function to extract the data from the URL.
+    def extract(url, table_attribs):
+        """Extracts country GDP data from a web page table."""
+        page = requests.get(url).text  # Get the HTML content of the webpage
+        data = BeautifulSoup(page,'html.parser')  # Parse the HTML content
+        df = pd.DataFrame(columns=table_attribs)  # Initialize empty DataFrame with column names
+        tables = data.find_all('tbody')  # Find all table bodies in the HTML
+        rows = tables[2].find_all('tr')  # Extract rows from the third table
+        for row in rows:
+            col = row.find_all('td')  # Find all cells in the current row
+            if len(col)!=0:  # Skip empty rows
+                if col[0].find('a') is not None and '—' not in col[2]:  # Check for country link and valid data
+                    data_dict = {"Country": col[0].a.contents[0],  # Extract country name
+                                    "GDP_USD_millions": col[1].contents[0]}  # Extract GDP value
+                    df1 = pd.DataFrame(data_dict, index=[0])  # Create single-row DataFrame
+                    df = pd.concat([df,df1], ignore_index=True)  # Append to main DataFrame
+        return df  # Return the final DataFrame with extracted data
+        
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('ExtractSnippet')" style="display: none;" id="hide-ExtractSnippet">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Transforming Data</h2>
+    <p>The extracted data has GDP in millions of US Dollars.</p>
+    <p>We would rather this in billions. This code snippet shows a function that does the conversion on the dataframe.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('TransformSnippet', this)">View Code Snippet</button>
+        <pre id="TransformSnippet" class="code-snippet" style="display: none;">
+            <code>
+    #Function to transform the data extracted from the URL.
+    def transform(df):
+        # Convert the column to a list
+        GDP_list = df["GDP_USD_millions"].tolist()
+        
+        # Create a new list with properly converted values
+        converted_GDP = []
+        for x in GDP_list:
+            if x == "—" or x == "-" or x == "N/A" or pd.isna(x):
+                # Handle missing values
+                converted_GDP.append(float('nan'))  # Use NaN for missing data
+            else:
+                # Remove commas and convert to float
+                converted_GDP.append(float("".join(x.split(','))))
+        
+        # Convert from millions to billions
+        GDP_list = [np.round(x/1000, 2) if not np.isnan(x) else x for x in converted_GDP]
+        
+        # Update the DataFrame
+        df["GDP_USD_millions"] = GDP_list
+        df = df.rename(columns={"GDP_USD_millions": "GDP_USD_billions"})
+        
+        return df
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('TransformSnippet')" style="display: none;" id="hide-TransformSnippet">Hide Code Snippet</button>
+</div>
+
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Loading Data</h2>
+    <p>We want to load the data to a csv file and also to a database table.</p>
+    <p>The code snippet shows 2 functions, one for each.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('LoadSnippet', this)">View Code Snippet</button>
+        <pre id="LoadSnippet" class="code-snippet" style="display: none;">
+            <code>
+    def load_to_csv(df, csv_path):
+        df.to_csv(csv_path)
+    
+    
+    def load_to_db(df, sql_connection, table_name):
+        df.to_sql(table_name, sql_connection, if_exists='replace', index=False)
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('LoadSnippet')" style="display: none;" id="hide-LoadSnippet">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Running a query on the database.</h2>
+    <p>Once the extracted and transformed data has been loaded to a database table, we want to check we can run queries as required.</p>
+    <p>The code snippet shows a function to do this.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('RunQuerySnippet', this)">View Code Snippet</button>
+        <pre id="RunQuerySnippet" class="code-snippet" style="display: none;">
+            <code>
+    def run_query(query_statement, sql_connection):
+        print(query_statement)
+        query_output = pd.read_sql(query_statement, sql_connection)
+        print(query_output)
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('RunQuerySnippet')" style="display: none;" id="hide-RunQuerySnippet">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Logging Progress</h2>
+    <p>As the script carries out its tasks we want to log each step for visibility and troubleshooting purposes.</p>
+    <p>This function provides this functionality.</p>
+    <p>A message can be passed as a parameter to this function and it will log it in the log file.</p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('LogProgress', this)">View Code Snippet</button>
+        <pre id="LogProgress" class="code-snippet" style="display: none;">
+            <code>
+    def log_progress(message): 
+        timestamp_format = '%Y-%h-%d-%H:%M:%S' # Year-Monthname-Day-Hour-Minute-Second 
+        now = datetime.now() # get current timestamp 
+        timestamp = now.strftime(timestamp_format) 
+        with open("./etl_project_log.txt","a") as f: 
+            f.write(timestamp + ' : ' + message + '\n')
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('LogProgress')" style="display: none;" id="hide-LogProgress">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>The Main Script</h2>
+    <p>Now that all the required functions are in place, the main script can be written to perform the ETL process.</p>
+    <p>This code snippet shows the main script.</p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <div class="code-panel">
+        <button class="code-btn" onclick="toggleCode('MainScript', this)">View Code Snippet</button>
+        <pre id="MainScript" class="code-snippet" style="display: none;">
+            <code>
+    log_progress('Preliminaries complete. Initiating ETL process')
+    df = extract(url, table_attribs)
+    log_progress('Data extraction complete. Initiating Transformation process')
+    df = transform(df)
+    log_progress('Data transformation complete. Initiating loading process')
+    load_to_csv(df, csv_path)
+    log_progress('Data saved to CSV file')
+    sql_connection = sqlite3.connect('World_Economies.db')
+    log_progress('SQL Connection initiated.')
+    load_to_db(df, sql_connection, table_name)
+    log_progress('Data loaded to Database as table. Running the query')
+    query_statement = f"SELECT * from {table_name} WHERE GDP_USD_billions >= 1000"
+    run_query(query_statement, sql_connection)
+    log_progress('Process Complete.')
+    sql_connection.close()
+            </code>
+        </pre>
+        <button class="hide-code-btn" onclick="hideCode('MainScript')" style="display: none;" id="hide-MainScript">Hide Code Snippet</button>
+</div>
+
+<div class="step">
+    <br>
+    <br>
+    <h2>Pipeline Run and Log File</h2>
+    <p>This screenshot shows the script running. the extracted and transformed data printed in the terminal and loaded to the csv file.</p>
+    <p>The output in the terminal is the output of a SQL query that was run against the transformed data.</p>
+    <p>It shows all countries with forecast GDP for 2025 over US$1000 billion.</p>
+    <p>The screenshot also displays the log file which shows the progress of the script.</p>
+    <button class="screenshot-btn" onclick="toggleScreenshot('pipelinerunandlog', this)">View Screenshot</button>
+    <img src="{% static 'portfolio/project19/pipelinerunandlog.png' %}" id="pipelinerunandlog" class="screenshot" alt="pipelinerunandlog">
+    <button class="hide-btn" onclick="hideScreenshot('pipelinerunandlog')" style="display: none;" id="hide-pipelinerunandlog">Hide Screenshot</button>
+</div>
+
+
+{% endblock %}
